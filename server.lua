@@ -4,7 +4,7 @@
 --]]
 
 local cancel = true -- set this to true and player wont be removed from vehicle
-local kick = true -- kick the player if he gets detected?
+local kick = true -- kick the player if he gets detected? Requires ESX
 local kickreason = "anticheat" -- what will the hacker see when anticheat kicks them
 local webhook = 'URL HERE' -- Discord Webhook make it '' for no log
 
