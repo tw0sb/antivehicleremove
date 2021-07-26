@@ -1,6 +1,6 @@
 # antivehicleremove
 
-Annoyed from retards making your cars unusable? 
+Annoyed from hackers making your cars unusable? 
 This is a simple script for FiveM that detects/logs and punishes players that remove other players from their cars.
 
 Includes simple yet powerful configuration to suite your needs.
