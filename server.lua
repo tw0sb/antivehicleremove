@@ -1,14 +1,44 @@
 --[[
 	Script to locate players that use cheats to
 	kick other players off their vehicle
+	some badly coded scripts will cause this to falsly trigger
 --]]
 
-local cancel = true -- set this to true and player wont be removed from vehicle
-local kick = true -- kick the player if he gets detected? Requires ESX
-local kickreason = "anticheat" -- what will the hacker see when anticheat kicks them
-local webhook = 'URL HERE' -- Discord Webhook make it '' for no log
+local ESXserver = false -- use ESX to kick player if kick is enabled
 
--- Do not edit unless you know what you are doing
+local cancel = true -- Set this to true and player wont be removed from the vehicle
+local kick = true -- Kick the player if he gets detected? 
+local kickreason = "anticheat" -- what will the hacker see when anticheat kicks them
+
+--Webhook settings
+local webhook = 'URL HERE' -- Discord Webhook make it '' for no log
+local webhookname = 'AntiCheat' -- Webhook name
+local webhookMsg = 'Anticheat detected $name ($id) trying to remove other players from their vehicle' -- Message to send to discord replace $name and $id with the cheaters name and id
+
+--[[ DO NOT EDIT BELOW THIS LINE]]
+--Check if discord webhook exists
+function isValidURL(str)
+	if str == nil or str == '' then return false end
+	if string.sub(str, 1, string.len("http://")) ~= "http://" and string.sub(str, 1, string.len("https://")) ~= "https://" then
+		return false
+	end
+	return true
+end
+
+function kickPlayer(src, reason)
+	if(kick)then
+		if(ESXserver == true) then
+			ESX.GetPlayerFromId(sender).kick(reason)
+		else	
+			DropPlayer(src, reason)
+		end
+	end
+end
+
+function replace(str, what, with)
+	local str, _ = string.gsub(str, what, with)
+	return str
+end
 
 -- Intercept the event the cheaters are using
 AddEventHandler('clearPedTasksEvent', function(sender, ev)
@@ -17,13 +47,11 @@ AddEventHandler('clearPedTasksEvent', function(sender, ev)
 		CancelEvent()
 	end
 	-- Webook check
-	if(webhook ~= '') then
-		-- Message and send to discord
-		local message = "(" ..sender .. ") " .. GetPlayerName(sender) .. " tried to remove someone from their vehicle. 99.9% probability of being a hacker or a badly configured script."
-		PerformHttpRequest(webhook, function(err, text, headers) end, 'POST', json.encode({username = "Vehicle remove bot", content = message}), { ['Content-Type'] = 'application/json' })
+	if(isValidURL(webhook)) then
+		local sendtoDiscordMsg = replace(replace(webhookMsg, "$id", sender), "$name", GetPlayerName(sender))
+		PerformHttpRequest(webhook, function(err, text, headers) end, 'POST', json.encode({username = webhookname, content = sendtoDiscordMsg}), { ['Content-Type'] = 'application/json' })
 	end
-	-- Kick check
-	if kick then
-		ESX.GetPlayerFromId(sender).kick(kickreason)
-	end
+	-- Kick player
+	kickPlayer(sender, kickreason)
 end)
+

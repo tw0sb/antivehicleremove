@@ -1,9 +1,8 @@
 # antivehicleremove
 
-Annoyed from hackers making your cars unusable? 
-This is a simple script for FiveM that detects/logs and punishes players that remove other players from their cars.
+Simple script I made while running my FiveM servers to stop moders from constantly removing players from their vehicles.
 
-Includes simple yet powerful configuration to suite your needs.
+Latest version was not tested in-game. 
 
 ## Installation
 
